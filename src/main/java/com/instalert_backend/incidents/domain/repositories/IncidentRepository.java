@@ -5,10 +5,8 @@ import com.instalert_backend.incidents.domain.model.aggregates.Incident;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Incident repository
- */
 public interface IncidentRepository {
+
     Optional<Incident> findById(Long id);
 
     List<Incident> findAll();
