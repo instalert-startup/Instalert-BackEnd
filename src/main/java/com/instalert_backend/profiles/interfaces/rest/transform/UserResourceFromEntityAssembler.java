@@ -10,6 +10,7 @@ public class UserResourceFromEntityAssembler {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
+                user.getPassword(),
                 user.getRole(),
                 user.getCurrentLocation(),
                 user.getAvatar(),
