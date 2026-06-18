@@ -7,6 +7,9 @@ public class UserPersistenceAssembler {
 
     public static UserPersistenceEntity toEntity(User user) {
         UserPersistenceEntity entity = new UserPersistenceEntity();
+        if (user.getId() != null) {
+            entity.setId(user.getId());
+        }
         entity.setName(user.getName());
         entity.setEmail(user.getEmail());
         entity.setPassword(user.getPassword());
@@ -14,6 +17,8 @@ public class UserPersistenceAssembler {
         entity.setCurrentLocation(user.getCurrentLocation());
         entity.setAvatar(user.getAvatar());
         entity.setPhone(user.getPhone());
+        entity.setBirthDate(user.getBirthDate());
+        entity.setGender(user.getGender());
         return entity;
     }
 
@@ -27,6 +32,8 @@ public class UserPersistenceAssembler {
         user.setCurrentLocation(entity.getCurrentLocation());
         user.setAvatar(entity.getAvatar());
         user.setPhone(entity.getPhone());
+        user.setBirthDate(entity.getBirthDate());
+        user.setGender(entity.getGender());
         return user;
     }
 }

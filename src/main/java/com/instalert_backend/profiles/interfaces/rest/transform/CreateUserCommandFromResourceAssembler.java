@@ -13,7 +13,9 @@ public class CreateUserCommandFromResourceAssembler {
                 resource.role(),
                 resource.currentLocation(),
                 resource.avatar(),
-                resource.phone()
+                resource.phone(),
+                resource.birthDate(),
+                resource.gender()
         );
     }
 }

@@ -8,5 +8,7 @@ public record UserResource(
         String role,
         String currentLocation,
         String avatar,
-        String phone
+        String phone,
+        String birthDate,
+        String gender
 ) {}
