@@ -2,11 +2,16 @@ package com.instalert_backend.profiles.interfaces.rest;
 
 import com.instalert_backend.profiles.application.commandservices.UserCommandService;
 import com.instalert_backend.profiles.application.queryservices.UserQueryService;
+import com.instalert_backend.profiles.domain.model.commands.DeleteUserCommand;
 import com.instalert_backend.profiles.domain.model.queries.GetAllUsersQuery;
 import com.instalert_backend.profiles.domain.model.queries.GetUserByIdQuery;
+import com.instalert_backend.profiles.interfaces.rest.resources.ChangePasswordResource;
 import com.instalert_backend.profiles.interfaces.rest.resources.CreateUserResource;
+import com.instalert_backend.profiles.interfaces.rest.resources.UpdateUserResource;
 import com.instalert_backend.profiles.interfaces.rest.resources.UserResource;
+import com.instalert_backend.profiles.interfaces.rest.transform.ChangePasswordCommandFromResourceAssembler;
 import com.instalert_backend.profiles.interfaces.rest.transform.CreateUserCommandFromResourceAssembler;
+import com.instalert_backend.profiles.interfaces.rest.transform.UpdateUserCommandFromResourceAssembler;
 import com.instalert_backend.profiles.interfaces.rest.transform.UserResourceFromEntityAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,9 +59,25 @@ public class UsersController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResource> updateUser(@PathVariable Long id, @RequestBody UpdateUserResource resource) {
+        var command = UpdateUserCommandFromResourceAssembler.toCommandFromResource(id, resource);
+        var user = userCommandService.handle(command);
+        return user.map(u -> ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFromEntity(u)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<Void> changePassword(@PathVariable Long id, @RequestBody ChangePasswordResource resource) {
+        var command = ChangePasswordCommandFromResourceAssembler.toCommandFromResource(id, resource);
+        var user = userCommandService.handle(command);
+        return user.map(u -> ResponseEntity.ok().<Void>build())
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userCommandService.handle(new com.instalert_backend.profiles.domain.model.commands.DeleteUserCommand(id));
+        userCommandService.handle(new DeleteUserCommand(id));
         return ResponseEntity.noContent().build();
     }
 }

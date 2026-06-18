@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class User extends AbstractDomainAggregateRoot<User> {
+
     private Long id;
     private String name;
     private String email;
@@ -16,6 +17,8 @@ public class User extends AbstractDomainAggregateRoot<User> {
     private String currentLocation;
     private String avatar;
     private String phone;
+    private String birthDate;
+    private String gender;
 
     public User() {}
 
@@ -27,5 +30,7 @@ public class User extends AbstractDomainAggregateRoot<User> {
         this.currentLocation = command.currentLocation();
         this.avatar = command.avatar();
         this.phone = command.phone();
+        this.birthDate = command.birthDate();
+        this.gender = command.gender();
     }
 }
