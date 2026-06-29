@@ -7,6 +7,7 @@ import com.instalert_backend.profiles.domain.model.commands.CreateUserCommand;
 import com.instalert_backend.profiles.domain.model.commands.DeleteUserCommand;
 import com.instalert_backend.profiles.domain.model.commands.UpdateUserCommand;
 import com.instalert_backend.profiles.domain.repositories.UserRepository;
+import com.instalert_backend.profiles.domain.model.commands.UpdateUserRoleCommand;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -41,6 +42,18 @@ public class UserCommandServiceImpl implements UserCommandService {
         user.setPhone(command.phone());
         user.setBirthDate(command.birthDate());
         user.setGender(command.gender());
+        var updatedUser = userRepository.save(user);
+        return Optional.of(updatedUser);
+    }
+
+    @Override
+    public Optional<User> handle(UpdateUserRoleCommand command) {
+        var existingUser = userRepository.findById(command.id());
+        if (existingUser.isEmpty()) {
+            return Optional.empty();
+        }
+        var user = existingUser.get();
+        user.setRole(command.role());
         var updatedUser = userRepository.save(user);
         return Optional.of(updatedUser);
     }
