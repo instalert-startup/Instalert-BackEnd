@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.instalert_backend.profiles.interfaces.rest.resources.UpdateUserRoleResource;
+import com.instalert_backend.profiles.interfaces.rest.transform.UpdateUserRoleCommandFromResourceAssembler;
 
 import java.util.List;
 
@@ -72,6 +74,14 @@ public class UsersController {
         var command = ChangePasswordCommandFromResourceAssembler.toCommandFromResource(id, resource);
         var user = userCommandService.handle(command);
         return user.map(u -> ResponseEntity.ok().<Void>build())
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/role")
+    public ResponseEntity<UserResource> updateUserRole(@PathVariable Long id, @RequestBody UpdateUserRoleResource resource) {
+        var command = UpdateUserRoleCommandFromResourceAssembler.toCommandFromResource(id, resource);
+        var user = userCommandService.handle(command);
+        return user.map(u -> ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFromEntity(u)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
