@@ -84,7 +84,7 @@ public class UsersController {
         return user.map(u -> ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFromEntity(u)))
                 .orElse(ResponseEntity.notFound().build());
     }
-
+ // nuevo
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userCommandService.handle(new DeleteUserCommand(id));
