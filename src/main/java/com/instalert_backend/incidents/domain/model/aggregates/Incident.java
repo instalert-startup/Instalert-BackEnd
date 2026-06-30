@@ -74,6 +74,9 @@ public class Incident extends AbstractDomainAggregateRoot<Incident> {
                 command.timeReported()
         );
     }
+    public void updateStatus(String status) {
+        this.status = Objects.requireNonNull(status, "status must not be null");
+    }
 
     public void onCreated() {
         registerDomainEvent(IncidentCreatedEvent.from(this));
