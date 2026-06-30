@@ -24,6 +24,8 @@ public class UserPersistenceEntity extends AuditableAbstractPersistenceEntity {
     private String currentLocation;
     private String avatar;
     private String phone;
+    private String birthDate;
+    private String gender;
 
     public UserPersistenceEntity() {}
 }

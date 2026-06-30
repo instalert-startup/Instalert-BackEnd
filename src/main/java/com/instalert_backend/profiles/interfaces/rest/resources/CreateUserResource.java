@@ -7,5 +7,7 @@ public record CreateUserResource(
         String role,
         String currentLocation,
         String avatar,
-        String phone
+        String phone,
+        String birthDate,
+        String gender
 ) {}

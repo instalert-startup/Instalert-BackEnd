@@ -11,6 +11,10 @@ import com.instalert_backend.incidents.interfaces.rest.transform.IncidentResourc
 import com.instalert_backend.shared.application.result.ApplicationError;
 import com.instalert_backend.shared.interfaces.rest.transform.ErrorResponseAssembler;
 import com.instalert_backend.shared.interfaces.rest.transform.ResponseEntityAssembler;
+import com.instalert_backend.incidents.domain.model.commands.DeleteIncidentCommand;
+import com.instalert_backend.incidents.domain.model.commands.UpdateIncidentStatusCommand;
+import com.instalert_backend.incidents.interfaces.rest.resources.UpdateIncidentStatusResource;
+import com.instalert_backend.incidents.interfaces.rest.transform.UpdateIncidentStatusCommandFromResourceAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -118,5 +122,56 @@ public class IncidentsController {
 
         var incidentResource = IncidentResourceFromEntityAssembler.toResourceFromEntity(incident.get());
         return ResponseEntity.ok(incidentResource);
+    }
+    @Operation(
+            summary = "Delete an incident",
+            description = "Deletes an incident report by its unique identifier."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Incident deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Incident not found")
+    })
+    @DeleteMapping("/{incidentId}")
+    public ResponseEntity<?> deleteIncident(
+            @PathVariable
+            @Parameter(description = "Incident unique identifier", example = "1", required = true)
+            Long incidentId
+    ) {
+        var command = new DeleteIncidentCommand(incidentId);
+        var result = incidentCommandService.handle(command);
+
+        return ResponseEntityAssembler.toResponseEntityFromResult(
+                result,
+                v -> null,
+                HttpStatus.NO_CONTENT
+        );
+    }
+    @Operation(
+            summary = "Update incident status",
+            description = "Updates the status of an existing incident report."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Incident status updated successfully",
+                    content = @Content(schema = @Schema(implementation = IncidentResource.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Incident not found")
+    })
+    @PutMapping("/{incidentId}/status")
+    public ResponseEntity<?> updateIncidentStatus(
+            @PathVariable
+            @Parameter(description = "Incident unique identifier", example = "1", required = true)
+            Long incidentId,
+            @Valid @RequestBody UpdateIncidentStatusResource resource
+    ) {
+        var command = UpdateIncidentStatusCommandFromResourceAssembler.toCommandFromResource(incidentId, resource);
+        var result = incidentCommandService.handle(command);
+
+        return ResponseEntityAssembler.toResponseEntityFromResult(
+                result,
+                IncidentResourceFromEntityAssembler::toResourceFromEntity,
+                HttpStatus.OK
+        );
     }
 }
