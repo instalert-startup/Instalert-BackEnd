@@ -5,9 +5,7 @@ import com.instalert_backend.communities.domain.model.events.CommunityCreatedEve
 import com.instalert_backend.shared.domain.model.aggregates.AbstractDomainAggregateRoot;
 import lombok.Getter;
 
-/**
- * Entidad principal (Aggregate) para las Comunidades de InstAlert.
- */
+
 public class Community extends AbstractDomainAggregateRoot<Community> {
     @Getter
     private Long id;
@@ -21,23 +19,28 @@ public class Community extends AbstractDomainAggregateRoot<Community> {
     @Getter
     private boolean isPrivate;
 
-    // 1. Constructor vacío (Obligatorio para Spring/JPA)
+    @Getter
+    private Long ownerId;
+
+
     public Community() {
     }
 
-    // 2. Constructor para cuando se crea desde el Frontend (Comando)
+
     public Community(CreateCommunityCommand command) {
         this.name = command.name();
         this.description = command.description();
         this.isPrivate = command.isPrivate();
+        this.ownerId = command.ownerId();
     }
 
-    // 3. NUEVO: Constructor para cuando se reconstruye desde la Base de Datos (Assembler)
-    public Community(Long id, String name, String description, boolean isPrivate) {
+
+    public Community(Long id, String name, String description, boolean isPrivate, Long ownerId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.isPrivate = isPrivate;
+        this.ownerId = ownerId;
     }
 
     public void onCreated() {
