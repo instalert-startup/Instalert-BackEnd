@@ -6,8 +6,9 @@ import com.instalert_backend.profiles.domain.model.commands.ChangePasswordComman
 import com.instalert_backend.profiles.domain.model.commands.CreateUserCommand;
 import com.instalert_backend.profiles.domain.model.commands.DeleteUserCommand;
 import com.instalert_backend.profiles.domain.model.commands.UpdateUserCommand;
-import com.instalert_backend.profiles.domain.repositories.UserRepository;
 import com.instalert_backend.profiles.domain.model.commands.UpdateUserRoleCommand;
+import com.instalert_backend.profiles.domain.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -16,9 +17,11 @@ import java.util.Optional;
 public class UserCommandServiceImpl implements UserCommandService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserCommandServiceImpl(UserRepository userRepository) {
+    public UserCommandServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -27,6 +30,7 @@ public class UserCommandServiceImpl implements UserCommandService {
             throw new IllegalArgumentException("Ya existe un usuario con ese email");
         }
         var user = new User(command);
+        user.setPassword(passwordEncoder.encode(command.password()));
         var savedUser = userRepository.save(user);
         return Optional.of(savedUser);
     }
@@ -65,10 +69,10 @@ public class UserCommandServiceImpl implements UserCommandService {
             return Optional.empty();
         }
         var user = existingUser.get();
-        if (!user.getPassword().equals(command.currentPassword())) {
+        if (!passwordEncoder.matches(command.currentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("La contraseña actual no es correcta");
         }
-        user.setPassword(command.newPassword());
+        user.setPassword(passwordEncoder.encode(command.newPassword()));
         var updatedUser = userRepository.save(user);
         return Optional.of(updatedUser);
     }

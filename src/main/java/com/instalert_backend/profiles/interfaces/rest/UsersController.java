@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.instalert_backend.profiles.interfaces.rest.resources.UpdateUserRoleResource;
 import com.instalert_backend.profiles.interfaces.rest.transform.UpdateUserRoleCommandFromResourceAssembler;
+import com.instalert_backend.profiles.domain.model.queries.LoginUserQuery;
+import com.instalert_backend.profiles.interfaces.rest.resources.LoginResource;
 
 import java.util.List;
 
@@ -51,6 +53,14 @@ public class UsersController {
                 .map(UserResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
         return ResponseEntity.ok(resources);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResource> login(@RequestBody LoginResource resource) {
+        var query = new LoginUserQuery(resource.email(), resource.password());
+        var user = userQueryService.handle(query);
+        return user.map(u -> ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFromEntity(u)))
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     @GetMapping("/{id}")
