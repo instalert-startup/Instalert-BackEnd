@@ -10,10 +10,11 @@ public class CommunityPersistenceEntity extends AuditableAbstractPersistenceEnti
     private String name;
     private String description;
     private boolean isPrivate;
+    private Long ownerId;
 
     public CommunityPersistenceEntity() {}
 
-    // Getters y Setters
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
@@ -22,4 +23,7 @@ public class CommunityPersistenceEntity extends AuditableAbstractPersistenceEnti
 
     public boolean isPrivate() { return isPrivate; }
     public void setPrivate(boolean aPrivate) { isPrivate = aPrivate; }
+
+    public Long getOwnerId() { return ownerId; }
+    public void setOwnerId(Long ownerId) { this.ownerId = ownerId; }
 }

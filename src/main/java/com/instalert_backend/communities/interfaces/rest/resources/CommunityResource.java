@@ -13,5 +13,8 @@ public record CommunityResource(
         String description,
 
         @Schema(description = "Si es privada", example = "true")
-        boolean isPrivate
+        boolean isPrivate,
+
+        @Schema(description = "ID del creador de la comunidad", example = "1")
+        Long ownerId
 ) {}

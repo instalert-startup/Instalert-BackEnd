@@ -9,7 +9,8 @@ public class CommunityResourceFromEntityAssembler {
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
-                entity.isPrivate()
+                entity.isPrivate(),
+                entity.getOwnerId()
         );
     }
 }

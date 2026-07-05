@@ -8,7 +8,8 @@ public class CreateCommunityCommandFromResourceAssembler {
         return new CreateCommunityCommand(
                 resource.name(),
                 resource.description(),
-                resource.isPrivate()
+                resource.isPrivate(),
+                resource.ownerId()
         );
     }
 }
