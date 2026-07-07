@@ -12,7 +12,6 @@ public class UserPersistenceAssembler {
         }
         entity.setName(user.getName());
         entity.setEmail(user.getEmail());
-        entity.setPassword(user.getPassword());
         entity.setRole(user.getRole());
         entity.setCurrentLocation(user.getCurrentLocation());
         entity.setAvatar(user.getAvatar());
@@ -27,7 +26,6 @@ public class UserPersistenceAssembler {
         user.setId(entity.getId());
         user.setName(entity.getName());
         user.setEmail(entity.getEmail());
-        user.setPassword(entity.getPassword());
         user.setRole(entity.getRole());
         user.setCurrentLocation(entity.getCurrentLocation());
         user.setAvatar(entity.getAvatar());

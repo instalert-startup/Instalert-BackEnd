@@ -5,11 +5,9 @@ import com.instalert_backend.profiles.application.queryservices.UserQueryService
 import com.instalert_backend.profiles.domain.model.commands.DeleteUserCommand;
 import com.instalert_backend.profiles.domain.model.queries.GetAllUsersQuery;
 import com.instalert_backend.profiles.domain.model.queries.GetUserByIdQuery;
-import com.instalert_backend.profiles.interfaces.rest.resources.ChangePasswordResource;
 import com.instalert_backend.profiles.interfaces.rest.resources.CreateUserResource;
 import com.instalert_backend.profiles.interfaces.rest.resources.UpdateUserResource;
 import com.instalert_backend.profiles.interfaces.rest.resources.UserResource;
-import com.instalert_backend.profiles.interfaces.rest.transform.ChangePasswordCommandFromResourceAssembler;
 import com.instalert_backend.profiles.interfaces.rest.transform.CreateUserCommandFromResourceAssembler;
 import com.instalert_backend.profiles.interfaces.rest.transform.UpdateUserCommandFromResourceAssembler;
 import com.instalert_backend.profiles.interfaces.rest.transform.UserResourceFromEntityAssembler;
@@ -19,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.instalert_backend.profiles.interfaces.rest.resources.UpdateUserRoleResource;
 import com.instalert_backend.profiles.interfaces.rest.transform.UpdateUserRoleCommandFromResourceAssembler;
-import com.instalert_backend.profiles.domain.model.queries.LoginUserQuery;
-import com.instalert_backend.profiles.interfaces.rest.resources.LoginResource;
 
 import java.util.List;
 
@@ -55,14 +51,6 @@ public class UsersController {
         return ResponseEntity.ok(resources);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<UserResource> login(@RequestBody LoginResource resource) {
-        var query = new LoginUserQuery(resource.email(), resource.password());
-        var user = userQueryService.handle(query);
-        return user.map(u -> ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFromEntity(u)))
-                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<UserResource> getUserById(@PathVariable Long id) {
         var query = new GetUserByIdQuery(id);
@@ -79,14 +67,6 @@ public class UsersController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}/password")
-    public ResponseEntity<Void> changePassword(@PathVariable Long id, @RequestBody ChangePasswordResource resource) {
-        var command = ChangePasswordCommandFromResourceAssembler.toCommandFromResource(id, resource);
-        var user = userCommandService.handle(command);
-        return user.map(u -> ResponseEntity.ok().<Void>build())
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @PutMapping("/{id}/role")
     public ResponseEntity<UserResource> updateUserRole(@PathVariable Long id, @RequestBody UpdateUserRoleResource resource) {
         var command = UpdateUserRoleCommandFromResourceAssembler.toCommandFromResource(id, resource);
@@ -94,7 +74,7 @@ public class UsersController {
         return user.map(u -> ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFromEntity(u)))
                 .orElse(ResponseEntity.notFound().build());
     }
- // nuevo
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userCommandService.handle(new DeleteUserCommand(id));

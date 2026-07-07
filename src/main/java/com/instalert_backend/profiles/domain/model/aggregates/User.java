@@ -12,7 +12,6 @@ public class User extends AbstractDomainAggregateRoot<User> {
     private Long id;
     private String name;
     private String email;
-    private String password;
     private String role;
     private String currentLocation;
     private String avatar;
@@ -23,9 +22,9 @@ public class User extends AbstractDomainAggregateRoot<User> {
     public User() {}
 
     public User(CreateUserCommand command) {
+        this.id = command.id();
         this.name = command.name();
         this.email = command.email();
-        this.password = command.password();
         this.role = command.role();
         this.currentLocation = command.currentLocation();
         this.avatar = command.avatar();

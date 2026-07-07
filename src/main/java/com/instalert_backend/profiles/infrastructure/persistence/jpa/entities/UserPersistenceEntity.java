@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "ProfilesUserPersistenceEntity")
 @Table(name = "users")
 public class UserPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
@@ -16,9 +16,6 @@ public class UserPersistenceEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
-
-    @Column(nullable = false)
-    private String password;
 
     private String role;
     private String currentLocation;
