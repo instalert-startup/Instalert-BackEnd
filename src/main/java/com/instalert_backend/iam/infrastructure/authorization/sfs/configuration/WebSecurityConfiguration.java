@@ -74,10 +74,19 @@ public class WebSecurityConfiguration {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedRequestHandlerEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        // Publico: login, registro, cambio de contraseña con validacion propia
                         .requestMatchers("/api/v1/authentication/**").permitAll()
+                        // Publico: documentacion
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/v1/users").permitAll()
-                        .anyRequest().permitAll()
+                        // Publico: crear cuenta de perfil justo despues del registro en iam
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/users").permitAll()
+                        // Publico: ver listados (util para la demo y para no romper flujos existentes)
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/users/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/incidents/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/emergencies/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/communities/**").permitAll()
+                        // Todo lo demas requiere estar autenticado con token valido
+                        .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
